@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-check-double"></i> 
+                <span class="ms-2">Task Manager</span>
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="navbar-text me-3" id="taskStats">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    <span class="stats-text">Total: 0 | Active: 0 | Completed: 0</span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm mb-4 animate__animated animate__fadeIn">
+                    <div class="card-body p-4">
+                        <form id="taskForm" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" id="title" name="title" 
+                                        placeholder="What needs to be done?" required>
+                                <div class="invalid-feedback">
+                                    Please enter a task title
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" id="description" name="description" 
+                                            placeholder="Add details (optional)" rows="2"></textarea>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                        <input type="date" class="form-control" id="dueDate" name="dueDate">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select" id="priority" name="priority">
+                                        <option value="low">🟢 Low Priority</option>
+                                        <option value="medium">🟡 Medium Priority</option>
+                                        <option value="high">🔴 High Priority</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-plus"></i> Add Task
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <div class="btn-group" role="group" aria-label="Task filters">
+                        <button type="button" class="btn btn-outline-primary active" data-filter="all">
+                            <i class="fas fa-tasks me-2"></i>All
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" data-filter="active">
+                            <i class="fas fa-running me-2"></i>Active
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" data-filter="completed">
+                            <i class="fas fa-check-circle me-2"></i>Completed
+                        </button>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                                id="sortDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-sort me-2"></i>Sort By
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-sort="dueDate">
+                                <i class="fas fa-calendar me-2"></i>Due Date
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" data-sort="priority">
+                                <i class="fas fa-flag me-2"></i>Priority
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" data-sort="createdAt">
+                                <i class="fas fa-clock me-2"></i>Created Date
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="tasksContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notifications-container position-fixed bottom-0 end-0 p-4">
+        <div class="notification success-note animate__animated animate__fadeInRight d-none" id="successNote">
+            <div class="note-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="note-content">
+                <h6 class="note-title">Success</h6>
+                <p class="note-message"></p>
+            </div>
+            <button type="button" class="btn-close" onclick="this.parentElement.classList.add('animate__fadeOutRight')"></button>
+        </div>
+
+        <div class="notification warning-note animate__animated animate__fadeInRight d-none" id="warningNote">
+            <div class="note-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="note-content">
+                <h6 class="note-title">Warning</h6>
+                <p class="note-message"></p>
+            </div>
+            <button type="button" class="btn-close" onclick="this.parentElement.classList.add('animate__fadeOutRight')"></button>
+        </div>
+
+        <div class="notification error-note animate__animated animate__fadeInRight d-none" id="errorNote">
+            <div class="note-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="note-content">
+                <h6 class="note-title">Error</h6>
+                <p class="note-message"></p>
+            </div>
+            <button type="button" class="btn-close" onclick="this.parentElement.classList.add('animate__fadeOutRight')"></button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
